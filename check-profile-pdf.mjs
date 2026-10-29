@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+// Optional integration check: npm install --no-save pdf-lib @napi-rs/canvas
+const { PDFDocument, StandardFonts } = require('pdf-lib');
+const canvas = require('@napi-rs/canvas');
+globalThis.DOMMatrix = canvas.DOMMatrix;
+globalThis.ImageData = canvas.ImageData;
+globalThis.Path2D = canvas.Path2D;
+const { extractResume } = await import('./dist/profile.js');
+const doc = await PDFDocument.create();
+const font = await doc.embedFont(StandardFonts.Helvetica);
+doc.addPage().drawText('Research: CO2RR copper multicarbon products, operando Raman, DFT.', { font, size: 12, x: 40, y: 700 });
+const data = await doc.save();
+const extracted = await extractResume({ name: 'resume.pdf', size: data.byteLength, async arrayBuffer() { return data.slice().buffer; } });
+assert.ok(extracted.text.includes('CO2RR copper multicarbon'));
+const blank = await PDFDocument.create();
+blank.addPage();
+const blankData = await blank.save();
+await assert.rejects(extractResume({ name: 'scanned.pdf', size: blankData.byteLength, async arrayBuffer() { return blankData.slice().buffer; } }), /扫描版 PDF/);
+console.log('real PDF checks passed: text extraction and scanned/blank PDF guidance');

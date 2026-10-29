@@ -1,0 +1,13 @@
+* text=auto
+*.py text eol=lf
+*.mjs text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+# Preserve upstream bytes and the vendor provenance hashes on every platform.
+dist/vendor/** -text -whitespace

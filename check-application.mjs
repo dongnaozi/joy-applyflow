@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {defaultApplication,validateApplication,validateMentorTasks,applicationProgress,mentorProgress,APPLICATION_STEPS,renderApplication} from './dist/application.js';
+const a=defaultApplication();assert.equal(a.tasks.length,8);assert.equal(a.goal,5);assert.equal(applicationProgress(a.tasks).percent,0);
+a.tasks[0].done=true;a.tasks[1].done=true;assert.deepEqual(applicationProgress(a.tasks),{done:2,total:8,percent:25});
+assert.equal(defaultApplication().tasks[0].done,false);assert.equal(applicationProgress([]).percent,0);
+assert.deepEqual(validateApplication(),defaultApplication());assert.deepEqual(validateMentorTasks(),Object.fromEntries(APPLICATION_STEPS.map(s=>[s.id,false])));
+const imported=validateApplication(JSON.parse(JSON.stringify(a)));assert.deepEqual(imported,a);
+assert.equal(validateApplication({goal:'x'}).goal,5);assert.equal(validateApplication({goal:-2}).goal,1);assert.equal(validateApplication({goal:1000}).goal,100);
+assert.equal(validateApplication({goal:null}).goal,5);assert.equal(validateApplication({goal:''}).goal,5);
+assert.equal(validateApplication({tasks:[{id:'custom-a',label:' Task ',done:'true'},{id:'custom-a',label:'duplicate',done:true},{id:'bad!id',label:'x'}]}).tasks.length,1);
+assert.equal(validateApplication({tasks:[{id:'custom-a',label:'x',done:'true'}]}).tasks[0].done,false);
+const record={tasks:{read:true,fit:true,submitted:'true',other:true}};assert.deepEqual(mentorProgress(record),{done:2,total:5,percent:40});
+assert.equal(Object.hasOwn(validateMentorTasks({__proto__:{submitted:true}}),'other'),false);
+assert.equal(validateMentorTasks({__proto__:{submitted:true}}).submitted,false);
+const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const markup=renderApplication({application:validateApplication({tasks:[{id:'custom-a',label:'<script>bad</script>',done:false}]}),savedMentors:[],saved:{},e,icon:()=>'',rankLabel:()=>''});
+assert(markup.includes('&lt;script&gt;'));assert(!markup.includes('<script>'));assert(markup.includes('data-app-task="custom-a"'));assert(markup.includes('add-application-task'));
+console.log('Application checks passed: migration, progress, zero denominator, goal bounds, task validation and safe rendering.');
