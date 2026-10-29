@@ -5,11 +5,12 @@ import { fileURLToPath } from 'node:url';
 import { seedMentors as mentors, rankings } from './dist/mentor-data.js';
 const root = fileURLToPath(new URL('./dist/', import.meta.url));
 const html = readFileSync(root + 'index.html', 'utf8');
-for (const [, asset] of html.matchAll(/(?:src|href)="([^"#]+\.(?:css|js|svg))"/g)) {
+for (const [, url] of html.matchAll(/(?:src|href)="([^"#]+\.(?:css|js|svg)(?:\?[^"#]*)?)"/g)) {
+  const asset=url.split('?')[0];
   assert(!asset.startsWith('http'), '页面启动依赖必须随项目保存');
   assert(existsSync(root + asset), `缺少资源：${asset}`);
 }
-for (const name of ['styles.css', 'workbench.css', 'literature.css', 'dashboard.css', 'planning.css', 'vendor/tabler/tabler.min.css']) {
+for (const name of ['styles.css', 'workbench.css', 'literature.css', 'dashboard.css', 'planning.css', 'obsidian.css', 'appearance.css', 'vendor/tabler/tabler.min.css']) {
   const css = readFileSync(root + name, 'utf8');
   assert(!/@import/.test(css), `样式不得依赖外部导入：${name}`);
   for (const [, url] of css.matchAll(/url\(([^)]+)\)/g)) {

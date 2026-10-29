@@ -8,18 +8,24 @@ Joy ApplyFlow 是由 Joy 构建的本地博士申请工作台，帮助申请者�
 
 Joy ApplyFlow is a local PhD application workbench built by Joy. It helps applicants organize supervisors and universities, follow research literature, compare CV keywords with supervisors' research interests, and track preparation with application checklists. Optional Ollama integration supports local models. Personal profiles, extracted CV text, and application records are stored in the current browser, separate from the public code.
 
-**Release 1.0** is a local workbench for researching supervisors, organizing a shortlist, and following an application checklist. Draft versioning and school deadline reminders are planned; they are not part of this release. The current interface is primarily Chinese.
+**Release 1.0.1** adds a larger sourced supervisor library, QS 2026 top-100 discovery, local Obsidian vault integration, nine color themes, and a simpler interface with Times New Roman English text. Draft versioning and school deadline reminders remain planned. The current interface is primarily Chinese.
+
+第二版收录 **130 位导师**，其中 **121 位来自 QS 2026 前 100 院校，覆盖 79 校**（各研究方向合计）。前 100 校均列入收录范围，尚未核实的学校显示“待补充”。不同研究方向与筛选条件会显示不同数量。
 
 ## 现在可以做什么
 
-- 查看有来源的导师档案、精选论文、学术关系和 QS 2026 综合排名；通过研究方向关键词同步筛选。
+- 查看有来源的导师档案、精选论文、学术关系和 QS 2026 综合排名；默认探索前 100 院校，可切换全部已收录院校，通过研究方向关键词同步筛选。
 - 手动添加导师，或从公开官网提取资料，再用可选的本机 Ollama 整理待核对的导师条目。
 - 在浏览器本机解析 PDF、DOCX、TXT / Markdown 简历，用关键词比较研究方向覆盖率。
 - 收藏导师、勾选准备事项和逐位导师任务，记录申请阶段、跟进日期与备注。
 - 读取已配置期刊的 RSS / Atom 文献更新，筛选并收藏论文。
 - 导出、导入个人 JSON 备份，导出申请清单 CSV。
+- 选择九种工作台配色，按个人称呼生成头像；外观设置保存在本机。
+- 在 Obsidian 板块连接本地仓库、预览并增量同步资料、保留个人阅读笔记，也支持双链 Markdown ZIP 与原生打开链接。配置见 [Obsidian 联动](docs/OBSIDIAN.md)。
 
 关键词覆盖率不是录取概率。公开档案、排名、关系和论文样本不构成完整数据库；申请前请回到学校、项目和导师官网确认最新信息。
+
+院校页列出 QS 2026 前 100 的完整院校范围，以及每校当前方向的收录情况。没有条目的学校显示“待补充”；同校相关导师不设固定名额，官网核实后继续增加。排名年度固定显示，未将 2027、学科排名或研究所名次混入。收录规则见 [导师收录](docs/DISCOVERY.md)。
 
 ## 快速启动
 
@@ -36,6 +42,10 @@ python server.py
 Windows 也可以双击 `打开工作台.cmd` 或 `start-workbench.cmd`；结束使用后双击 `停止工作台.cmd`。第一次启动前请安装 Python，并将其加入 PATH。保留整个项目目录，不能只复制 HTML 文件。
 
 普通浏览、简历解析和清单管理可在本机使用。获取 RSS、识别公开导师官网及打开外部原文需要联网。
+
+### 从第一版升级
+
+先在旧版导出个人 JSON 备份，再解压第二版到新文件夹并停止旧服务。用原来的浏览器和 `http://127.0.0.1:8792/` 打开新版，原有浏览器记录可继续使用；更换浏览器或端口时，使用 JSON 备份导入。第二版继续兼容 `version: 1` 的备份。Obsidian 请先备份仓库，再连接目录并预览同步；旧版无受管标记的同名笔记会保留并提示冲突。
 
 ## 可选：本机 Ollama
 
@@ -87,6 +97,7 @@ joy-applyflow/
 | 版本 | 计划范围 | 当前状态 |
 | --- | --- | --- |
 | 1.0 | 导师研究、文献、背景匹配、清单与备份 | 已实现 |
+| 1.0.1 | QS 前100扩库、Obsidian 联动、九色主题与精简界面 | 已实现 |
 | 1.1 | 套磁 / 邮件联系日志、学校与项目截止日期、提醒 | 计划中 |
 | 1.2 | 材料状态追踪、申请文书草稿的本地版本管理 | 计划中 |
 | 1.3 | 可选持久化方案，评估 SQLite 与可迁移备份 | 计划中 |

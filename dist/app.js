@@ -3,6 +3,13 @@ import { extractResume, analyzeProfile, matchMentor } from './profile.js';
 import { createLiterature } from './literature.js';
 import { defaultResearch, normalizeResearch, researchView, filterMentorPapers } from './research.js';
 import { defaultApplication, validateApplication, validateMentorTasks, applicationProgress, mentorProgress, APPLICATION_STEPS, renderApplication } from './application.js';
+import { normalizeAppearance, applyAppearance, renderAppearance, profileInitials } from './appearance.js';
+import { normalizeObsidian, createObsidian } from './obsidian.js';
+import { QS_YEAR, top100School, top100Coverage, normalizeDiscovery, discoveryMentors } from './qs100.js';
+import { renderSchoolsPage } from './schools.js';
+import { installPlainDisplay } from './display.js';
+
+installPlainDisplay();
 
 const $ = s => document.querySelector(s);
 const e = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -32,20 +39,22 @@ const paths = {
   clock:'M12 8v5l3 2 M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0',
 };
 function icon(name){ return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[name] || paths.paper}"/></svg>`; }
-const routes = [ ['overview','grid','工作台'],['profile','profile','我的背景'],['mentors','people','导师'],['schools','school','院校 · QS'],['network','network','关系网'],['papers','paper','导师论文'],['literature','search','文献追踪'],['shortlist','bookmark','申请清单'] ];
+const routes = [ ['overview','grid','工作台'],['profile','profile','背景'],['mentors','people','导师'],['schools','school','院校'],['network','network','关系'],['papers','paper','导师论文'],['literature','search','文献'],['shortlist','bookmark','申请清单'],['obsidian','link','Obsidian'] ];
 const europeanCountries=new Set(['英国','荷兰','丹麦','德国','法国','西班牙','瑞士','比利时','瑞典','挪威','芬兰','意大利','奥地利','爱尔兰','葡萄牙']);
-const regions=[['all','全部'],['美国','美国'],['加拿大','加拿大'],['澳大利亚','澳大利亚'],['欧洲','欧洲']];
-const inRegion=(m,region)=>!region||region==='all'||(region==='欧洲'?europeanCountries.has(m.country):m.country===region);
+const regions=[['all','全部'],['美国','美国'],['加拿大','加拿大'],['澳大利亚','澳大利亚'],['欧洲','欧洲'],['亚洲','亚洲']];
+const asianCountries=new Set(['中国大陆','中国','中国香港','中国台湾','日本','韩国','新加坡','马来西亚','沙特阿拉伯']);
+const inRegion=(m,region)=>!region||region==='all'||(region==='欧洲'?europeanCountries.has(m.country):region==='亚洲'?asianCountries.has(m.country):m.country===region);
 const stages = ['待了解','准备联系','已联系','已申请'];
 const STORAGE_KEY='catalyst-atlas-v1';
 const LOCAL_MODELS=['deepseek-r1:1.5b','deepseek-r1:7b'];
-const defaultState=()=>({version:1,ai:{model:LOCAL_MODELS[0]},profile:{name:'',degree:'',school:'',advisor:'',intake:'2027 Fall',background:'',cvText:'',fileName:''},research:defaultResearch(),application:defaultApplication(),saved:{},customMentors:[],paperSaved:[]});
+const defaultState=()=>({version:1,ai:{model:LOCAL_MODELS[0]},appearance:normalizeAppearance(),obsidian:normalizeObsidian(),discovery:normalizeDiscovery(),profile:{name:'',degree:'',school:'',advisor:'',intake:'2027 Fall',background:'',cvText:'',fileName:''},research:defaultResearch(),application:defaultApplication(),saved:{},customMentors:[],paperSaved:[]});
 let state=defaultState();
 let storageError=false;
 let hasModelChoice=false;
 try{const raw=localStorage.getItem(STORAGE_KEY);if(raw){const parsed=JSON.parse(raw);state=validateState(parsed);hasModelChoice=LOCAL_MODELS.includes(parsed.ai?.model);}}catch{storageError=true;}
 let mentors=[...seedMentors,...state.customMentors];
 let query='',country='',topic='',sort='default',scope='all',year='',paperJournal='',paperMentor='',paperOnly=false;
+let schoolQuery='',schoolCountry='',schoolCoverage='';
 let selectedGraph='jaramillo',relationType='all';
 const compare=new Set();
 let route=routeFromHash();
@@ -58,6 +67,9 @@ function validateState(raw){
   if(!raw || raw.version!==1 || typeof raw!=='object')throw Error('备份格式不受支持');
   const base=defaultState();
   if(LOCAL_MODELS.includes(raw.ai?.model))base.ai.model=raw.ai.model;
+  base.appearance=normalizeAppearance(raw.appearance);
+  base.obsidian=normalizeObsidian(raw.obsidian);
+  base.discovery=normalizeDiscovery(raw.discovery);
   base.research=normalizeResearch(raw.research);
   base.application=validateApplication(raw.application);
   if(raw.profile && typeof raw.profile==='object')for(const key of Object.keys(base.profile))base.profile[key]=String(raw.profile[key] ?? base.profile[key]).slice(0,key==='cvText'?1000000:20000);
@@ -90,13 +102,13 @@ function getAnalysis(){return analyzeProfile([state.profile.background,state.pro
 function routeFromHash(){const r=location.hash.slice(1);return routes.some(x=>x[0]===r)?r:'overview';}
 function go(next){if(route===next){render();window.scrollTo(0,0);}else location.hash=next;}
 function toast(message,error=false){clearTimeout(toastTimer);const el=$('#toast');el.textContent=message;el.className='visible';el.style.background=error?'#834536':'';toastTimer=setTimeout(()=>el.classList.remove('visible'),4500);}
-function qsFor(m){return m.qs || rankings.find(r=>r.school===m.school);}
+function qsFor(m){const known=m.qs||rankings.find(r=>r.school===m.school),listed=top100School(m.school);return listed?{...listed,source:known?.source||listed.source}:known;}
 function rankNumber(m){return Number(String(qsFor(m)?.rank||'').replace(/[^0-9]/g,''))||99999;}
 function rankLabel(m){const q=qsFor(m);return q?`QS ${q.year} · #${q.rank}`:'QS 待核实';}
-function currentResearch(){return researchView(mentors,state.research);}
+function currentResearch(){return researchView(discoveryMentors(mentors,state.discovery),state.research);}
 function papers(){return currentResearch().papers;}
-function resetDiscovery(){query='';country='';topic='';sort='default';scope='all';year='';paperJournal='';paperMentor='';paperOnly=false;selectedGraph='';relationType='all';compare.clear();$('#global-search').value='';}
-function researchContext(){return `<p class="research-filter-note">当前方向：<strong>${e(state.research.name)}</strong> · 导师、院校、关系与论文同步筛选。<button data-action="research-settings">更改方向</button></p>`;}
+function resetDiscovery(){query='';country='';topic='';sort='default';scope='all';year='';paperJournal='';paperMentor='';paperOnly=false;schoolQuery='';schoolCountry='';schoolCoverage='';selectedGraph='';relationType='all';compare.clear();$('#global-search').value='';}
+function researchContext(){return `<div class="research-filter-note discovery-context"><strong>${e(state.research.name)}</strong><label for="discovery-rank">院校范围<select id="discovery-rank" data-rank-scope><option value="qs100" ${state.discovery.rankScope==='qs100'?'selected':''}>QS ${QS_YEAR} 前 100</option><option value="all" ${state.discovery.rankScope==='all'?'selected':''}>全部已收录院校</option></select></label><button data-action="research-settings">更改方向</button></div>`;}
 function filteredMentors({overview=false}={}){
   let list=currentResearch().mentors.filter(m=>overview||((!query||[m.name,m.school,m.schoolShort,m.country,m.summary,...m.topics,...m.keywords].join(' ').toLowerCase().includes(query.toLowerCase()))&&inRegion(m,country)&&(!topic||m.topics.includes(topic))));
   if(overview)list=list.filter(m=>inRegion(m,scope));
@@ -111,19 +123,24 @@ function button(action,label,ico='',cls='',extra=''){return `<button class="butt
 function empty(title,desc,cta=''){return `<div class="empty"><h3>${title}</h3><p>${desc}</p>${cta}</div>`;}
 function renderNav(){
   updateStorageStatus();
+  applyAppearance(state.appearance);
+  const initial=profileInitials(state.profile.name);
+  $('#brand-initials').textContent=initial;$('#user-initials').textContent=initial;
+  $('#user-name').textContent=state.profile.name||'我的工作台';
+  $('.brand').setAttribute('aria-label',`JoyFlow 首页${state.profile.name?' · '+state.profile.name:''}`);
   $('#ai-model-label').textContent=state.ai.model.endsWith(':7b')?'7B':'1.5B';
   $('.model-launcher').title=`Ollama · ${state.ai.model} · 点击选择模型`;
   const research=state.research,prepProgress=applicationProgress(state.application.tasks);
   $('#research-name').textContent=research.name;$('#research-short').textContent=research.shortName;
   $('#research-chip').title=`${research.name} · 点击定制研究方向`;
-  $('#workspace-brand-subtitle').textContent=(research.shortName?research.shortName+' · ':'')+'CATALYST ATLAS';$('#workspace-topic').textContent=research.shortName||research.name;document.title=`${research.shortName||research.name} 博士申请工作台 · 本机版`;
+  $('#workspace-topic').textContent=research.shortName||research.name;document.title=`JoyFlow · ${research.shortName||research.name}`;
   $('#nav').innerHTML=routes.map(([id,ico,label],i)=>`${i===2||id==='shortlist'?'<div class="nav-separator" aria-hidden="true"></div>':''}<button class="nav-button nav-link ${route===id?'active':''}" data-go="${id}" ${route===id?'aria-current="page"':''}>${icon(ico)}${label}${id==='shortlist'?`<span class="nav-count" title="申请准备完成 ${prepProgress.done}/${prepProgress.total} 项">${prepProgress.done}/${prepProgress.total}</span>`:''}</button>`).join('');
   $('#breadcrumb').textContent=routes.find(x=>x[0]===route)[2];
-  $('#intake-label').textContent=`${state.profile.intake||'申请季待定'} · 个人工作台`;
+  $('#intake-label').textContent=state.profile.intake||'申请季待定';
 }
 function render(){
   renderNav();
-  const renderers={overview:renderOverview,mentors:renderMentors,network:renderNetwork,papers:renderPapers,literature:()=>literature.render(),schools:renderSchools,shortlist:renderShortlist,profile:renderProfile};
+  const renderers={overview:renderOverview,mentors:renderMentors,network:renderNetwork,papers:renderPapers,literature:()=>literature.render(),schools:renderSchools,shortlist:renderShortlist,profile:renderProfile,obsidian:()=>obsidian.render()};
   $('#main').innerHTML=renderers[route]();
   document.querySelectorAll('[data-icon]').forEach(el=>el.innerHTML=icon(el.dataset.icon));
   $('#main').querySelectorAll('input:not([type=checkbox]):not([type=file]),textarea').forEach(el=>el.classList.add('form-control'));
@@ -141,7 +158,7 @@ function renderOverview(){
   const total=current.mentors.filter(m=>inRegion(m,scope)).length;
   const metrics=[
     [current.mentors.length,'当前方向导师','位','mentors','people','按课题与地区筛选'],
-    [schools.size,'目标院校','所','schools','school','查看院校与 QS'],
+    [state.discovery.rankScope==='qs100'?100:schools.size,'目标院校','所','schools','school',state.discovery.rankScope==='qs100'?`${top100Coverage(current.mentors).filter(s=>s.mentors.length).length} 校已收录相关导师`:'查看院校与 QS'],
     [ps.length,'导师近期论文','篇','papers','paper','阅读成果与作者证据'],
     [saved.length,'申请清单','位','shortlist','bookmark','跟进联系与申请']
   ];
@@ -154,14 +171,14 @@ function renderOverview(){
   <section class="dash-panel dash-papers card"><div class="dash-panel-head"><div><h2>导师近期论文</h2><p>精选成果 · 点击标题阅读原文</p></div><a class="text-button" href="#papers" data-go="papers">全部论文 ${icon('arrow')}</a></div>${ps.slice(0,3).map(p=>`<div class="dash-paper-row"><div><span class="journal-badge">${e(p.journal)}</span><small>${e(p.year)}</small></div><div>${external(p.url,e(p.title),'dash-paper-title')}<p>${p.mentors.map(m=>e(m.name)).join(' · ')} · ${e(p.role||'作者角色待核实')}</p></div><button class="icon-button ${state.paperSaved.includes(p.key)?'saved':''}" data-paper="${e(p.key)}" aria-label="${state.paperSaved.includes(p.key)?'取消收藏':'收藏'}论文：${e(p.title)}" aria-pressed="${state.paperSaved.includes(p.key)}">${icon('bookmark')}</button></div>`).join('')}</section><p class="dash-footnote">公开资料核验于 2026-10-28–29 · 院校、论文和关系均保留来源；未确认的招生与成员信息显示待核实。</p>`;
 }
 function filters(){const scoped=currentResearch().mentors;return `<div class="filters"><input id="mentor-query" data-filter="query" aria-label="筛选导师" value="${e(query)}" placeholder="搜索姓名、院校或课题关键词"><select data-filter="country" aria-label="国家或地区">${options([...new Set(scoped.map(m=>m.country)),'欧洲'],country,'全部国家 / 地区')}</select><select data-filter="topic" aria-label="研究细分方向">${options([...new Set(scoped.flatMap(m=>m.topics))],topic,'全部研究方向')}</select><select data-filter="sort" aria-label="排序方式"><option value="default" ${sort==='default'?'selected':''}>${analysis.topics.length?'按方向覆盖排序':'默认排序'}</option><option value="qs" ${sort==='qs'?'selected':''}>按 QS 2026 排序</option><option value="match" ${sort==='match'?'selected':''}>按方向覆盖排序</option></select><button class="text-button" data-action="reset-filters">重置</button></div>`;}
-function renderMentors(){const list=filteredMentors();return heading('DISCOVER YOUR PEOPLE','发现导师','从细分课题、学校与研究证据，逐步缩小你的选择。',button('add-mentor','添加导师','plus')+button('profile','分析我的研究方向','spark','primary'))+researchContext()+filters()+`<div class="results-heading"><div class="filter-result">找到 ${list.length} 位导师${analysis.topics.length?' · 匹配为研究方向的关键词覆盖率':''}</div><span class="header-tag">种子库 · 可持续补充</span></div>`+(list.length?`<div class="mentor-grid full-grid">${list.map(mentorCard).join('')}</div>`:empty('暂时没有符合条件的导师','调整筛选或研究关键词，也可以从官网添加这个方向的导师。',button('reset-filters','清除筛选','search')));}
+function renderMentors(){const list=filteredMentors();return heading('DISCOVER YOUR PEOPLE','发现导师','从细分课题、学校与研究证据，逐步缩小你的选择。',button('add-mentor','添加导师','plus')+button('profile','分析我的研究方向','spark','primary'))+researchContext()+filters()+`<div class="results-heading"><div class="filter-result">找到 ${list.length} 位导师${analysis.topics.length?' · 匹配为研究方向的关键词覆盖率':''}</div><span class="header-tag">${state.discovery.rankScope==='qs100'?'QS 2026 前 100':'全部已收录'}</span></div>`+(list.length?`<div class="mentor-grid full-grid">${list.map(mentorCard).join('')}</div>`:empty('暂时没有符合条件的导师','调整筛选或研究关键词，也可以从官网添加这个方向的导师。',button('reset-filters','清除筛选','search')));}
 function paperTable(list){return list.length?`<div class="table-wrap card"><table class="table table-vcenter"><thead><tr><th>论文 / 研究主题</th><th>期刊</th><th>年份</th><th>相关导师</th><th>阅读</th></tr></thead><tbody>${list.map(p=>`<tr><td>${external(p.url,e(p.title),'paper-title')}<div class="paper-sub">${e(p.role||'作者角色待核实')}${p.dateNote?' · '+e(p.dateNote):''}</div></td><td><span class="journal-badge">${e(p.journal)}</span></td><td class="paper-year">${e(p.year)}</td><td>${p.mentors.map(m=>`<button class="text-button" data-detail="${e(m.id)}">${e(m.name)}</button>`).join('<br>')}</td><td><button class="icon-button ${state.paperSaved.includes(p.key)?'saved':''}" data-paper="${e(p.key)}" aria-label="${state.paperSaved.includes(p.key)?'取消收藏':'收藏'}论文：${e(p.title)}" aria-pressed="${state.paperSaved.includes(p.key)}">${icon(state.paperSaved.includes(p.key)?'check':'bookmark')}</button></td></tr>`).join('')}</tbody></table></div>`:empty('这里还没有论文','调整关键词或年份后再试一次。');}
 function renderPapers(){
   const all=papers(),list=filterMentorPapers(all,{query,journal:paperJournal,year,mentor:paperMentor,savedOnly:paperOnly,saved:state.paperSaved});
   const authors=[...new Map(all.flatMap(p=>p.mentors).map(m=>[m.id,m])).values()].sort((a,b)=>a.name.localeCompare(b.name));
   return heading('READ WITH A PURPOSE','导师论文','按期刊、年份和导师组合筛选，阅读与你方向相关的成果。',button('export','导出工作台','download'))+researchContext()+`<div class="section-note">这里是精选论文样本，不能用于比较完整发表量。通讯作者成果需原始角色证据；合作作者、共同通讯与待核实角色分别保留。</div><div class="filters paper-filters"><label class="paper-search" for="paper-query">搜索论文<input id="paper-query" data-filter="query" value="${e(query)}" placeholder="搜索标题、期刊或导师"></label><label for="paper-journal">期刊<select id="paper-journal" data-filter="paperJournal">${options([...new Set(all.map(p=>p.journal))].sort(),paperJournal,'全部期刊')}</select></label><label for="paper-year">年份<select id="paper-year" data-filter="year">${options([...new Set(all.map(p=>String(p.year)))].sort().reverse(),year,'全部年份')}</select></label><label for="paper-mentor">相关导师<select id="paper-mentor" data-filter="paperMentor"><option value="">全部导师</option>${authors.map(m=>`<option value="${e(m.id)}" ${paperMentor===m.id?'selected':''}>${e(m.name)}</option>`).join('')}</select></label><div class="paper-filter-actions"><button class="tab ${paperOnly?'active':''}" data-action="paper-only" aria-pressed="${paperOnly}">仅看已收藏 (${all.filter(p=>state.paperSaved.includes(p.key)).length})</button><button class="text-button" data-action="reset-filters">重置筛选</button></div></div><p class="filter-result" role="status">${list.length} / ${all.length} 篇论文 · 点击标题访问原文</p>${paperTable(list)}`;
 }
-function renderSchools(){const scoped=currentResearch().mentors,schools=[...new Map(scoped.map(m=>[m.school,m])).values()].sort((a,b)=>rankNumber(a)-rankNumber(b));if(!schools.length)return heading('LOOK BEYOND THE RANKING','院校与排名','把学校、导师方向与公开证据放在一起看。')+researchContext()+empty('当前方向暂无院校','从官网添加相关导师后，这里会同步显示所属院校。',button('add-mentor','添加导师','plus'));return heading('LOOK BEYOND THE RANKING','院校与排名','把学校、导师方向与公开证据放在一起看。')+researchContext()+`<div class="section-note">统一展示 QS 2026 世界大学综合排名，并非当前研究方向的学科排名；排名不代表课题组质量、招生名额或申请难度。并列排名保留“=”标记。</div><div class="table-wrap card"><table class="table table-vcenter"><thead><tr><th>学校</th><th>国家 / 地区</th><th>QS 2026</th><th>已收录导师</th><th>信息来源</th></tr></thead><tbody>${schools.map(m=>{const qs=qsFor(m);return `<tr><td class="school-cell"><strong>${e(qs?.schoolShort||m.schoolShort)}</strong><small>${e(m.school)}</small></td><td>${e(m.country)}</td><td><span class="rank">${qs?'#'+e(qs.rank):'—'}</span></td><td>${scoped.filter(x=>x.school===m.school).map(x=>`<button class="text-button" data-detail="${e(x.id)}">${e(x.name)}</button>`).join('<br>')}</td><td>${qs?external(qs.source,'QS 官方来源 ↗'):e('待核实')}</td></tr>`;}).join('')}</tbody></table></div><p class="micro-note">排名来源为 QS 官方学校档案的历史年度数据；导师、职称与课题分别依据大学或课题组页面核验。</p>`;}
+function renderSchools(){return renderSchoolsPage({mentors:currentResearch().mentors,settings:state.discovery,filters:{query:schoolQuery,country:schoolCountry,coverage:schoolCoverage},research:state.research,qsFor,e,external,heading,context:researchContext,empty});}
 function allRelations(){return currentResearch().mentors.flatMap(m=>(m.relations||[]).map(r=>({...r,from:m})));}
 function renderNetwork(){
   const scoped=currentResearch().mentors;
@@ -170,7 +187,7 @@ function renderNetwork(){
   const relations=(selected.relations||[]).filter(r=>relationType==='all'||(relationType==='supervisor'?r.type.includes('导师'):r.type==='合作'));
   const cx=350,cy=235,radius=150;
   const nodes=relations.map((r,i)=>{const angle=-Math.PI/2+i*2*Math.PI/relations.length;return {...r,x:cx+Math.cos(angle)*radius,y:cy+Math.sin(angle)*radius};});
-  return heading('CONNECT THE RESEARCH','学术关系','沿着有证据的师承与合作，理解课题组之间的联系。')+researchContext()+`<div class="filters"><label for="graph-mentor" class="muted">关系聚焦</label><select id="graph-mentor" data-filter="graph" aria-label="选择中心导师">${scoped.map(m=>`<option value="${e(m.id)}" ${m.id===selected.id?'selected':''}>${e(m.name)}</option>`).join('')}</select><select data-filter="relationType" aria-label="关系类型"><option value="all" ${relationType==='all'?'selected':''}>全部关系</option><option value="supervisor" ${relationType==='supervisor'?'selected':''}>博士 / 博后师承</option><option value="collaboration" ${relationType==='collaboration'?'selected':''}>论文合作</option></select><span class="filter-result" style="margin:0">当前方向 ${allRelations().length} 条有来源的关系记录</span></div><div class="network-layout"><div class="network-canvas"><svg viewBox="0 0 700 480" role="img" aria-label="${e(selected.name)} 的学术关系图，详细关系与证据列于右侧"><defs><radialGradient id="node-gradient"><stop stop-color="#fcfdf7"/><stop offset="1" stop-color="#e8efdc"/></radialGradient></defs>${nodes.map(n=>`<path d="M${cx} ${cy}L${n.x} ${n.y}" stroke="${n.type==='合作'?'#aabb95':'#bc9c70'}" stroke-width="1.5" ${n.type==='合作'?'':'stroke-dasharray="4 5"'}/><text x="${(cx+n.x)/2+7}" y="${(cy+n.y)/2-7}" fill="#879473" font-size="9">${e(n.type)}</text>`).join('')}<g class="network-node" role="button" tabindex="0" data-detail="${e(selected.id)}" aria-label="查看 ${e(selected.name)}"><circle cx="${cx}" cy="${cy}" r="45" fill="#28533b" stroke="#d4e2ba" stroke-width="7"/><text x="${cx}" y="${cy+6}" text-anchor="middle" style="fill:#f0f7de;font:25px Arial,sans-serif">${e(selected.initials)}</text><text x="${cx}" y="${cy+66}" text-anchor="middle" style="font-weight:600;font-size:13px">${e(selected.name)}</text><text x="${cx}" y="${cy+84}" text-anchor="middle" style="font-size:9px;fill:#839074">${e(selected.schoolShort)}</text></g>${nodes.map(n=>{const target=mentors.find(m=>m.name===n.name || m.name.replace(/\s+/g,'')===n.name.replace(/\s+/g,''));return `<g ${target?`class="network-node" role="button" tabindex="0" data-detail="${e(target.id)}" aria-label="查看 ${e(n.name)}"`:''}><circle cx="${n.x}" cy="${n.y}" r="29" fill="url(#node-gradient)" stroke="#bccaab"/><text x="${n.x}" y="${n.y+5}" text-anchor="middle" style="font:16px Arial,sans-serif">${e(n.name.split(' ').map(x=>x[0]).slice(0,2).join(''))}</text><text x="${n.x}" y="${n.y+46}" text-anchor="middle">${e(n.name)}</text></g>`;}).join('')}${!nodes.length?`<text x="350" y="370" text-anchor="middle" fill="#7a886e" font-size="12">当前类型暂无已核实关系</text>`:''}</svg><div class="network-legend"><span><i></i>论文合作</span><span><i class="dashed"></i>博士 / 博后师承</span></div></div><aside class="side-panel card"><h2>关系背后的证据</h2><p class="panel-label">${e(selected.name)} · ${relations.length} 条记录</p><div class="relations-list">${relations.map(r=>`<article class="relation-item"><span class="badge">${e(r.type)}</span><p><strong>${e(selected.name)} ${r.type==='合作'?'↔':'←'} ${e(r.name)}</strong></p><p>${e(r.evidence)}</p>${external(r.source,'查看原始证据 ↗')}</article>`).join('')||'<p class="micro-note">暂无记录，后续可依据官方简历补充。</p>'}</div></aside></div><p class="micro-note">实线只表示论文合作；共同作者不自动视为师生。箭头“←”表示中心导师曾受右侧学者指导。尚未建立你与现任导师的关系时，不推断推荐或引荐路径。</p>`;
+  return heading('CONNECT THE RESEARCH','学术关系','沿着有证据的师承与合作，理解课题组之间的联系。')+researchContext()+`<div class="filters"><label for="graph-mentor" class="muted">关系聚焦</label><select id="graph-mentor" data-filter="graph" aria-label="选择中心导师">${scoped.map(m=>`<option value="${e(m.id)}" ${m.id===selected.id?'selected':''}>${e(m.name)}</option>`).join('')}</select><select data-filter="relationType" aria-label="关系类型"><option value="all" ${relationType==='all'?'selected':''}>全部关系</option><option value="supervisor" ${relationType==='supervisor'?'selected':''}>博士 / 博后师承</option><option value="collaboration" ${relationType==='collaboration'?'selected':''}>论文合作</option></select><span class="filter-result" style="margin:0">当前方向 ${allRelations().length} 条有来源的关系记录</span></div><div class="network-layout"><div class="network-canvas"><svg viewBox="0 0 700 480" role="img" aria-label="${e(selected.name)} 的学术关系图，详细关系与证据列于右侧"><defs><radialGradient id="node-gradient"><stop stop-color="#fcfdf7"/><stop offset="1" stop-color="#e8efdc"/></radialGradient></defs>${nodes.map(n=>`<path d="M${cx} ${cy}L${n.x} ${n.y}" stroke="${n.type==='合作'?'#aabb95':'#bc9c70'}" stroke-width="1.5" ${n.type==='合作'?'':'stroke-dasharray="4 5"'}/><text x="${(cx+n.x)/2+7}" y="${(cy+n.y)/2-7}" fill="#879473" font-size="9">${e(n.type)}</text>`).join('')}<g class="network-node" role="button" tabindex="0" data-detail="${e(selected.id)}" aria-label="查看 ${e(selected.name)}"><circle cx="${cx}" cy="${cy}" r="45" fill="#28533b" stroke="#d4e2ba" stroke-width="7"/><text x="${cx}" y="${cy+6}" text-anchor="middle" style="fill:#f0f7de;font:25px var(--app-font)">${e(selected.initials)}</text><text x="${cx}" y="${cy+66}" text-anchor="middle" style="font-weight:600;font-size:13px">${e(selected.name)}</text><text x="${cx}" y="${cy+84}" text-anchor="middle" style="font-size:9px;fill:#839074">${e(selected.schoolShort)}</text></g>${nodes.map(n=>{const target=mentors.find(m=>m.name===n.name || m.name.replace(/\s+/g,'')===n.name.replace(/\s+/g,''));return `<g ${target?`class="network-node" role="button" tabindex="0" data-detail="${e(target.id)}" aria-label="查看 ${e(n.name)}"`:''}><circle cx="${n.x}" cy="${n.y}" r="29" fill="url(#node-gradient)" stroke="#bccaab"/><text x="${n.x}" y="${n.y+5}" text-anchor="middle" style="font:16px var(--app-font)">${e(n.name.split(' ').map(x=>x[0]).slice(0,2).join(''))}</text><text x="${n.x}" y="${n.y+46}" text-anchor="middle">${e(n.name)}</text></g>`;}).join('')}${!nodes.length?`<text x="350" y="370" text-anchor="middle" fill="#7a886e" font-size="12">当前类型暂无已核实关系</text>`:''}</svg><div class="network-legend"><span><i></i>论文合作</span><span><i class="dashed"></i>博士 / 博后师承</span></div></div><aside class="side-panel card"><h2>关系背后的证据</h2><p class="panel-label">${e(selected.name)} · ${relations.length} 条记录</p><div class="relations-list">${relations.map(r=>`<article class="relation-item"><span class="badge">${e(r.type)}</span><p><strong>${e(selected.name)} ${r.type==='合作'?'↔':'←'} ${e(r.name)}</strong></p><p>${e(r.evidence)}</p>${external(r.source,'查看原始证据 ↗')}</article>`).join('')||'<p class="micro-note">暂无记录，后续可依据官方简历补充。</p>'}</div></aside></div><p class="micro-note">实线只表示论文合作；共同作者不自动视为师生。箭头“←”表示中心导师曾受右侧学者指导。尚未建立你与现任导师的关系时，不推断推荐或引荐路径。</p>`;
 }
 function renderShortlist(){
   const savedMentors=mentors.filter(m=>state.saved[m.id]);
@@ -289,7 +306,14 @@ const literature=createLiterature({e,external,icon,heading,button,empty,showDial
   toggleSaved:id=>{state.paperSaved=state.paperSaved.includes(id)?state.paperSaved.filter(x=>x!==id):[...state.paperSaved,id];persist();},
   download:downloadFile
 });
+const obsidian=createObsidian({e,icon,button,toast,
+  getData:()=>({state,mentors:currentResearch().mentors,papers:papers(),allMentors:mentors,allPapers:mentors.flatMap(m=>m.papers.map(p=>({...p,mentors:[m]}))),literaturePapers:literature.getPapers()}),
+  saveSettings:settings=>{const previous=state.obsidian;state.obsidian=settings;if(!persist()){state.obsidian=previous;return false;}render();return true;}
+});
 document.addEventListener('click',async event=>{
+  if(event.target.closest('[data-ob-action]')){await obsidian.click(event);return;}
+  const theme=event.target.closest('button.appearance-choice[data-theme]');
+  if(theme){const previous=state.appearance;state.appearance=normalizeAppearance({theme:theme.dataset.theme});if(!persist()){state.appearance=previous;return;}applyAppearance(state.appearance);$('#modal-content .dialog-body').innerHTML=renderAppearance({settings:state.appearance,e,icon});$('#modal-content [data-theme="'+state.appearance.theme+'"]')?.focus();return;}
   if(event.target.closest('a.skip')){event.preventDefault();$('#main').focus();return;}
   const removal=event.target.closest('[data-remove-app-task]');if(removal){const id=removal.dataset.removeAppTask;if(/^custom-/.test(id)){state.application.tasks=state.application.tasks.filter(task=>task.id!==id);persist();render();}return;}
   const target=event.target.closest('[data-action],[data-go],[data-detail],[data-save],[data-scope],[data-paper]');if(!target)return;
@@ -302,6 +326,7 @@ document.addEventListener('click',async event=>{
     case 'profile':go('profile');break;
     case 'shortlist':go('shortlist');break;
     case 'sources':showSources();break;
+    case 'appearance':showDialog('外观','选择工作台配色',renderAppearance({settings:state.appearance,e,icon}));break;
     case 'export':exportBackup();break;
     case 'export-csv':exportCsv();break;
     case 'export-application':exportApplicationCsv();break;
@@ -326,6 +351,9 @@ document.addEventListener('click',async event=>{
 });
 document.addEventListener('change',event=>{
   const t=event.target;
+  if(t.hasAttribute('data-rank-scope')){const previous=state.discovery;state.discovery=normalizeDiscovery({rankScope:t.value});if(!persist()){state.discovery=previous;return;}resetDiscovery();render();return;}
+  if(t.hasAttribute('data-school-country')){schoolCountry=t.value;render();return;}
+  if(t.hasAttribute('data-school-coverage')){schoolCoverage=t.value;render();return;}
   if(t.id==='ai-model'){const status=$('#ai-connection-status');status.classList.remove('error');status.textContent=`已选择 ${t.value}。可测试连接，或保存后用于导师官网识别。`;return;}
   if(t.hasAttribute('data-app-task')){const id=t.dataset.appTask,task=state.application.tasks.find(x=>x.id===id);if(task){task.done=t.checked;persist();render();document.querySelector(`[data-app-task="${CSS.escape(id)}"]`)?.focus();}return;}
   if(t.hasAttribute('data-mentor-task')){const id=t.dataset.mentorTask,step=t.dataset.step,entry=state.saved[id];if(entry&&APPLICATION_STEPS.some(x=>x.id===step)){entry.tasks=validateMentorTasks(entry.tasks);entry.tasks[step]=t.checked;persist();render();document.querySelector(`[data-mentor-task="${CSS.escape(id)}"][data-step="${CSS.escape(step)}"]`)?.focus();}return;}
@@ -339,12 +367,14 @@ document.addEventListener('change',event=>{
 });
 document.addEventListener('input',event=>{
   const t=event.target;
+  if(t.id==='school-query'){const start=t.selectionStart;schoolQuery=t.value;render();const next=$('#school-query');next?.focus();next?.setSelectionRange(start,start);return;}
   if(t.id==='mentor-url'&&mentorImportResult){mentorImportResult=null;$('#mentor-import-evidence').innerHTML='';$('#mentor-import-status').textContent='官网链接已改变，请重新识别或按新来源修正资料。';}
   if(t.dataset.note){state.saved[t.dataset.note].note=t.value.slice(0,5000);persist();return;}
   if(t.id==='global-search'){query=t.value;if(route!=='mentors')go('mentors');else render();return;}
   if(t.dataset.filter==='query'){const start=t.selectionStart;query=t.value;render();const next=$('#'+t.id);next?.focus();next?.setSelectionRange(start,start);}
 });
 document.addEventListener('submit',event=>{
+  if(event.target.id==='obsidian-settings-form'){event.preventDefault();obsidian.submit(event);return;}
   if(event.target.id==='ai-settings-form'){event.preventDefault();const model=event.target.elements.model.value;if(!LOCAL_MODELS.includes(model))return;const previous=state.ai.model;state.ai.model=model;hasModelChoice=true;if(!persist()){state.ai.model=previous;return;}$('#modal').close();render();toast(`已选择本地模型 ${model}`);return;}
   if(event.target.id==='research-settings-form'){event.preventDefault();try{const next=normalizeResearch(Object.fromEntries(new FormData(event.target)));state.research=next;resetDiscovery();if(!persist()){ $('#research-form-error').textContent='设置尚未写入浏览器，请导出备份后重试。';return;}$('#modal').close();render();toast('研究方向已保存，导师、院校、关系与论文已同步切换。');}catch(error){$('#research-form-error').textContent=error.message;}return;}
   if(event.target.id==='add-application-task'){event.preventDefault();const input=event.target.elements.label,label=input.value.trim();if(!label)return;if(state.application.tasks.length>=100){toast('最多保存 100 项准备事项。',true);return;}state.application.tasks.push({id:'custom-'+crypto.randomUUID(),label:label.slice(0,160),done:false});persist();render();document.querySelector('#add-application-task input')?.focus();return;}

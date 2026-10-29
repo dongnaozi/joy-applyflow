@@ -5,7 +5,7 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
 checks = [(sys.executable, name) for name in ('check-config.py', 'check-literature.py', 'check-mentor-import.py', 'check-ollama.py', 'check-release.py')]
-checks += [('node', name) for name in ('check-local.mjs', 'check-profile.mjs', 'check-research.mjs', 'check-research-view.mjs', 'check-application.mjs', 'check-literature.mjs')]
+checks += [('node', name) for name in ('check-local.mjs', 'check-profile.mjs', 'check-research.mjs', 'check-research-view.mjs', 'check-application.mjs', 'check-literature.mjs', 'check-appearance.mjs', 'check-obsidian.mjs', 'check-qs100.mjs', 'check-qs100-americas.mjs', 'check-qs100-global.mjs', 'check-display.mjs')]
 for command in checks:
     subprocess.run(command, cwd=root, check=True)
 print('All offline release checks passed.')

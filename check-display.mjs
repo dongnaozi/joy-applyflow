@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import { plainScientificText, plainDisplay } from './dist/display.js';
+assert.equal(plainScientificText('CO₂ / C₂H₄ / H⁺ / cm⁻²'),'CO2 / C2H4 / H+ / cm-2');
+assert.equal(plainScientificText('Fe–N₄  xᵃ  ¹³CO₂'),'Fe–N4  xa  13CO2');
+assert.equal(plainScientificText('CO2RR & ORR · 2027'),'CO2RR & ORR · 2027');
+const element={nodeType:1,attrs:{title:'CO₂'},getAttribute(name){return this.attrs[name]??null;},setAttribute(name,value){this.attrs[name]=value;}};
+const visible={nodeType:3,data:'CO₂ reduction',parentElement:{closest:()=>null}};
+const editable={nodeType:3,data:'My CV: CO₂ reduction',parentElement:{closest:()=>({})}};
+const textNodes=[visible,editable];
+element.ownerDocument={createTreeWalker:()=>{let i=0;return{nextNode:()=>textNodes[i++]||null};}};
+plainDisplay(element);
+assert.equal(element.attrs.title,'CO2');
+assert.equal(visible.data,'CO2 reduction');
+assert.equal(editable.data,'My CV: CO₂ reduction','Editable source text must not be silently rewritten');
+console.log('Display checks passed: plain scientific notation, dynamic labels and unchanged editable source text.');

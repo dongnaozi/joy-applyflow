@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
-import {seedMentors} from './dist/mentor-data.js';
+import {seedMentors as allSeedMentors} from './dist/mentor-data.js';
 import {defaultResearch,normalizeResearch,researchView,filterMentorPapers} from './dist/research.js';
 import {analyzeProfile,matchMentor} from './dist/profile.js';
 
+// Keep the original cohort regression fixed; the expansion has its own source/scope checks.
+const seedMentors=allSeedMentors.filter(m=>!m.qs100Expansion);
 const before=JSON.stringify(seedMentors),co2=researchView(seedMentors,defaultResearch());
 const orrResearch=normalizeResearch({name:'氧还原',shortName:'ORR',keywords:['ORR']});
 const orr=researchView(seedMentors,orrResearch);

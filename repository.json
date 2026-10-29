@@ -1,7 +1,7 @@
 {
   "name": "joy-applyflow",
-  "release": "v1.0.0",
-  "releaseName": "Joy ApplyFlow 1.0",
+  "release": "v1.0.1",
+  "releaseName": "Joy ApplyFlow 1.0.1",
   "description": "A personal and modular PhD application workbench built by Joy. Track supervisors, drafts, and deadlines with ease.",
   "visibility": "public",
   "topics": ["phd-application", "productivity", "workbench", "scholarship", "admissions-tracker"]

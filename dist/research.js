@@ -77,5 +77,5 @@ export function researchView(allMentors,research){
   return {mentors:visible,papers:[...map.values()].sort((a,b)=>b.year-a.year)};
 }
 export function filterMentorPapers(papers,{query='',journal='',year='',mentor='',savedOnly=false,saved=[]}={}){
-  return papers.filter(p=>(!query||[p.title,p.journal,...p.mentors.map(m=>m.name)].join(' ').toLowerCase().includes(query.toLowerCase()))&&(!journal||p.journal===journal)&&(!year||String(p.year)===String(year))&&(!mentor||p.mentors.some(m=>m.id===mentor))&&(!savedOnly||saved.includes(p.key)));
+  return papers.filter(p=>(!query||[p.title,p.journal,...p.mentors.map(m=>m.name)].join(' ').normalize('NFKC').toLowerCase().includes(query.normalize('NFKC').toLowerCase()))&&(!journal||p.journal===journal)&&(!year||String(p.year)===String(year))&&(!mentor||p.mentors.some(m=>m.id===mentor))&&(!savedOnly||saved.includes(p.key)));
 }

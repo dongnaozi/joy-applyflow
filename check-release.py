@@ -1,4 +1,4 @@
-"""Check the public file boundary using Git's index and ignore rules; never read private data."""
+"""Check tracked and unignored public files before sharing; never read ignored private data."""
 import json
 import re
 import subprocess
@@ -9,9 +9,9 @@ ROOT = Path(__file__).resolve().parent
 def git(*args, input=None):
     return subprocess.check_output(['git', *args], cwd=ROOT, input=input, text=True, encoding='utf-8')
 
-files = git('ls-files', '-z').split('\0')
+files = git('ls-files', '--cached', '--others', '--exclude-standard', '-z').split('\0')
 files = [name for name in files if name]
-assert files, 'Stage the reviewed release files before running this check.'
+assert files, 'No public files found to check.'
 blocked = {'.runtime', '__pycache__', 'node_modules', '.venv', 'private', 'backups', 'exports', 'drafts', 'resumes', 'attachments', 'mail', 'inbox'}
 private_suffixes = {'.pdf', '.docx', '.doc', '.eml', '.msg', '.mbox', '.pst', '.sqlite', '.sqlite3', '.db', '.log', '.pem', '.key'}
 for name in files:

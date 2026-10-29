@@ -1,7 +1,7 @@
-# Joy ApplyFlow 1.0 发布检查
+# Joy ApplyFlow 1.0.1 发布检查
 
-目标仓库：公开 GitHub 仓库 `joy-applyflow`。版本标签：`v1.0.0`；Release
-标题：`Joy ApplyFlow 1.0`。此文档是发布操作清单，不代表仓库或 Release 已创建。
+目标仓库：公开 GitHub 仓库 `dongnaozi/joy-applyflow`。版本标签：`v1.0.1`；Release
+标题：`Joy ApplyFlow 1.0.1`。此文档是发布流程，不代表当前版本已上传。
 
 1. 在用于公开发布的干净目录操作，运行 README 中的完整检查。确认首次启动使用
    空白申请档案，浏览器中导入的简历、研究方向和申请记录不会成为仓库种子。
@@ -26,16 +26,28 @@
 4. 检查公开种子：导师姓名、单位、论文题录及短证据保留出处；`literature-seed.json`
    中不得有出版社完整摘要、摘要译文或全文。核对 `THIRD_PARTY_NOTICES.md` 以及
    `dist/vendor/` 内所有许可证均进入发布包。
-5. 确认 CI 通过，再创建 `v1.0.0` 标签和标题为 `Joy ApplyFlow 1.0` 的 GitHub Release。
+5. 确认 CI 通过，再创建 `v1.0.1` 标签和标题为 `Joy ApplyFlow 1.0.1` 的 GitHub Release。
    发布说明采用已完成的功能与实际检查结果；附件只从审核过的跟踪文件生成，避免
    将本地整个工作目录打包。发布后在未导入个人资料的新浏览器配置中验证启动。
 
-## 可选 GitHub CLI 发布入口
+## 在现有仓库发布
 
-在已安装官方 GitHub CLI 并通过 `gh auth login` 登录后，可在完成本地提交和 `v1.0.0` 标签的仓库内运行：
+安装官方 GitHub CLI 并通过 `gh auth login` 登录。先确认 origin 指向目标仓库，更新版本元数据，运行 `python scripts/check.py`，再提交审阅过的公开文件。应用 1.0.1 继续使用 version-1 个人备份，不改浏览器存储键。
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/publish.ps1
+git fetch origin --tags
+git push origin main
 ```
 
-脚本读取 `repository.json` 中的仓库名、简介、五个 Topics 和 Release 名称。它拒绝已有 remote、同名现有仓库和未提交修改，避免误覆盖已有项目。它不会帮你创建账号、获取令牌或把个人文件加入 Git。公开仓库创建或推送成功一部分后若发生网络错误，请先核对远端状态再继续，不能把重试理解为回滚。
+确认当前提交的 CI 通过，再创建未占用的新标签并从提交生成附件：
+
+```sh
+git tag -a v1.0.1 -m "Joy ApplyFlow 1.0.1"
+git archive --format=zip --prefix=joy-applyflow-1.0.1/ --output=../joy-applyflow-v1.0.1.zip v1.0.1
+git push origin v1.0.1
+gh release create v1.0.1 ../joy-applyflow-v1.0.1.zip --repo dongnaozi/joy-applyflow --verify-tag --title "Joy ApplyFlow 1.0.1" --notes-file docs/RELEASE-v1.0.1.md
+```
+
+在临时目录解压并检查启动和资源，再核对公开 Release 的标签、提交与附件。`v1.0.0` 等旧标签保持原状；版本已存在时先检查状态，不强推或覆盖附件。
+
+`scripts/publish.ps1` 是首次创建新仓库的可选入口，会拒绝已有 remote；升级现有仓库使用上面的流程。GitHub 网页登录与 Git/API 凭据是不同的连接状态，发布需要相应授权。

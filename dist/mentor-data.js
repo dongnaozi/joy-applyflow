@@ -1,6 +1,9 @@
 import {mentors as initialMentors, rankings as initialRankings} from './data.js';
 import {mentors as globalMentors, rankings as globalRankings} from './global-mentors.js';
 import {mentors as orrMentors, mentorPatches} from './orr-mentors.js';
+import {mentors as americasMentors, rankings as americasRankings} from './qs100-americas.js';
+import {mentors as topGlobalMentors, rankings as topGlobalRankings} from './qs100-global.js';
+import {mentors as extraMentors, rankings as extraRankings} from './qs100-extra.js';
 
 const tagged=(m,area)=>({...m,researchAreas:[area],papers:(m.papers||[]).map(p=>({...p,researchAreas:[area]})),relations:(m.relations||[]).map(r=>({...r,researchAreas:r.type==='合作'?[area]:[]}))});
 export const seedMentors=[...initialMentors,...globalMentors].map(m=>tagged(m,'co2rr'));
@@ -20,4 +23,5 @@ for(const id of ['strasser','wu-gang']){
   const paper=source.papers.find(p=>/jacs\.(3c03033|5c15451)/.test(p.url));
   if(paper)jaouen.papers.push({...paper,role:'合作作者；通讯身份待核实',roleSource:''});
 }
-export const rankings=[...initialRankings,...globalRankings];
+seedMentors.push(...[...americasMentors,...topGlobalMentors,...extraMentors].map(m=>({...m,qs100Expansion:true})));
+export const rankings=[...new Map([...initialRankings,...globalRankings,...americasRankings,...topGlobalRankings,...extraRankings].map(r=>[r.school,r])).values()];

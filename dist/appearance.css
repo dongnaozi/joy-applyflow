@@ -1,0 +1,62 @@
+/* The selected color stays exact; readable text uses its darker companion. */
+:root{--accent:rgb(90,184,184);--accent-rgb:90,184,184;--on-accent:#101820;--on-accent-hover:#101820;--accent-hover:#53a9a9;--accent-link:#2d7272;--accent-border:#b7e0e0;--accent-soft:#edf7f7;--accent-faint:#f8fcfc;--focus:#2d7272}
+body,button,input,select,textarea,.brand-mark,.user-avatar{font-family:var(--app-font)}
+.brand.navbar-brand{gap:11px;padding:0 7px 23px;font-size:20px;letter-spacing:-.5px;line-height:1.2;min-height:60px;color:var(--ink);font-weight:650}
+.brand.navbar-brand .brand-mark{width:38px;height:38px;flex:0 0 38px;border-radius:11px;background:var(--accent);color:var(--on-accent);font:700 22px/1 var(--app-font);letter-spacing:0;padding:0;box-shadow:none}
+.brand.navbar-brand small,.workspace-label{display:none}
+.user-avatar{background:var(--accent-soft);color:var(--green);font-weight:600;font-size:13px}
+.nav-button.nav-link,.field-label,.sidebar-help,.user small,.breadcrumb,.global-search,.icon-button,.eyebrow,.stat-title,.stat-value span,.stat-bottom,.section-heading small,.tab,.school-name,.mentor-meta,.card-summary,.mentor-foot,.panel-label,.update-note,.paper-sub,footer,footer button,.empty,.network-legend,.relation-item p,.school-cell small,.board-col h2 span,.form-field label,.upload-zone p,.form-bottom small,.compare-check,.detail-title,.detail-facts,.detail-paper small,.micro-note,.header-tag{color:var(--muted)}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:1}
+.breadcrumb strong,.empty h3,.relation-item strong,.school-cell strong,.detail-facts strong{color:var(--ink)}
+.app-stat-label,.app-stat>strong small,.app-stat>p,.app-goal-label,.app-section-head p,.app-empty-tasks,.app-mentor-head p,.app-mentor-head small,.app-no-mentors p,.app-progress-note,.paper-filters label,.ai-model-notes p,.ai-endpoint,.ai-usage-note,.mentor-import-evidence{color:var(--muted)}
+.ai-connection-status{color:var(--green)}
+.page-heading.page-header{margin-bottom:20px;gap:16px}
+.page-heading h1{font-size:27px;line-height:1.35;letter-spacing:-.6px}
+.page-heading .eyebrow{margin-bottom:5px;letter-spacing:1px}
+.page-heading p{margin-top:6px;line-height:1.65}
+.nav-button.nav-link.active,.tab.active,.dash-region.active{background:var(--accent-soft);color:var(--green)}
+.nav-button.nav-link:hover,.nav-button:hover,.tab:hover,.dash-region:hover,.icon-button:hover{background:var(--accent-faint);color:var(--green)}
+.nav-count{border-color:var(--accent-border);color:var(--green)}
+a,.text-button,.paper-title,.dash-mentor-name>button{color:var(--green)}
+.button.primary,.button.btn-primary,.btn-primary,.dash-open-list{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.button.primary:hover,.button.btn-primary:hover,.btn-primary:hover,.dash-open-list:hover{background:var(--accent-hover);border-color:var(--accent-hover);color:var(--on-accent-hover)}
+.button.white{background:#fff;color:var(--green)}
+.button.btn-default:hover,.button:hover{border-color:var(--accent-border);background:var(--accent-faint)}
+.button.btn-default{color:var(--ink)}
+.research-chip,.badge,.tag:not(.blue):not(.gold),.step-number,.dash-intake,.dash-current-icon,.app-no-mentors>span,.upload-zone .upload-icon{background:var(--accent-soft);color:var(--green)}
+.research-chip:hover,.model-launcher:hover{background:var(--accent-soft);border-color:var(--accent-border)}
+.research-chip .tiny,.research-filter-note,.research-summary p,.research-summary .research-caption,.research-settings-hint,.research-form small,.research-form-error:empty,.mentor-import-status,.mentor-import-paste{color:var(--muted)}
+.model-launcher{color:var(--green);background:var(--accent-faint);border-color:var(--accent-border)}
+.section-note,.profile-insight,.contact-box,.mentor-import-top{background:var(--accent-faint);border-color:var(--accent-border);color:var(--muted)}
+.welcome-steps button,.upload-zone,.upload-zone.drag{background:var(--accent-faint);border-color:var(--accent-border)}
+.welcome-steps button:hover{border-color:var(--green)}
+.welcome-steps span,.welcome-steps small,.welcome-strip p{color:var(--muted)}
+.hero{background:var(--green);color:#fff}
+.hero .eyebrow,.hero p,.hero-note{color:#fff}
+.bookmark.saved svg{fill:var(--accent-soft)}
+.bookmark.saved,.match,.rank,.app-percent,.app-stat-label>span,.app-mentor-progress>span,.app-note-label,.app-mentor-options label{color:var(--green)}
+.progress-track span,.progress-row:nth-of-type(4n)+.progress-track span,.status-dot{background:var(--accent)}
+.dash-metric:hover,.mentor-card:hover{border-color:var(--accent-border);box-shadow:0 3px 12px rgb(var(--accent-rgb)/.08)}
+.dash-panel-footer:hover,.dash-stage-counts a:hover,.app-check-row:hover{background:var(--accent-faint);color:var(--green)}
+.dash-current-icon,.dash-tasks>button>svg:first-child,.dash-tasks>button>svg:last-child,.dash-followups time,.dash-metric-label svg{color:var(--green)}
+.app-task-item.is-done .app-check-row>span,.app-check-row.is-done>span{color:var(--green);text-decoration-color:var(--accent)}
+.lit-check input,input[type=checkbox],input[type=radio],progress{accent-color:var(--green)}
+.network-node:hover circle,.network-node:focus circle{stroke:var(--green)}
+.network-legend i{background:var(--accent)}
+.compare-bar,#toast{background:var(--green);color:#fff}
+.compare-bar .quiet{color:#fff}
+.button:focus-visible,button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.app-preparation :focus-visible,.app-mentor :focus-visible,.model-launcher:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.appearance-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.appearance-choice{display:flex;align-items:center;gap:10px;text-align:left;min-height:64px;min-width:0;border:1px solid var(--line);border-radius:9px;padding:12px;background:#fff;font-size:13px;line-height:1.5;color:var(--ink);transition:border-color .18s,background .18s}
+.appearance-choice>span:last-child{min-width:0;overflow-wrap:anywhere}
+.appearance-choice:hover{background:var(--accent-faint);border-color:var(--accent-border)}
+.appearance-choice[aria-pressed=true]{border-color:var(--green);background:var(--accent-faint);box-shadow:0 0 0 1px var(--green)}
+.appearance-swatch{display:grid;place-items:center;background:var(--swatch);width:28px;height:28px;border-radius:50%;flex:0 0 28px;color:#101820}
+.appearance-swatch svg{width:17px;height:17px;stroke-width:2}
+.appearance-note{font-size:12px!important;color:var(--muted);margin-top:17px;line-height:1.7}
+@media(max-width:760px){.brand.navbar-brand{padding-bottom:16px;font-size:21px;min-height:54px}.page-heading h1{font-size:25px}.appearance-options{grid-template-columns:repeat(2,minmax(0,1fr))}.appearance-choice{font-size:13px;min-height:64px}.page-heading .eyebrow{font-size:10px}.topbar .breadcrumb{display:none}.top-actions{width:100%;min-width:0;gap:8px}.global-search{flex:1;min-width:0;width:auto}.global-search input{min-width:0;font-size:12px}.top-actions>.icon-button[data-action=appearance]{display:inline-flex;flex:0 0 44px;width:44px;height:44px}.model-launcher{flex:0 0 auto;gap:5px;min-height:44px;padding:7px 9px;font-size:11px}}
+@media(max-width:430px){.appearance-options{gap:10px}.appearance-choice{padding:11px 9px;gap:8px}.appearance-swatch{width:25px;height:25px;flex-basis:25px}}
+@media(prefers-reduced-motion:reduce){.appearance-choice{transition:none}}
+
+/* Chemical scripts use the same baseline as surrounding text. */
+sub,sup{font-size:inherit;line-height:inherit;vertical-align:baseline;position:static;top:auto;bottom:auto}

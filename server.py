@@ -198,7 +198,7 @@ def screened_cache(papers, cutoff, keywords=(), excludes=()):
 
 
 def fetch_source(source):
-    request = Request(source['url'], headers={'User-Agent': 'CO2RR-Workbench/1.0 (personal research RSS reader)', 'Accept': 'application/rss+xml, application/atom+xml, application/xml, text/xml'})
+    request = Request(source['url'], headers={'User-Agent': 'JoyApplyFlow/1.0.1 (personal research RSS reader)', 'Accept': 'application/rss+xml, application/atom+xml, application/xml, text/xml'})
     with urlopen(request, timeout=12) as response:
         payload = response.read(MAX_BYTES + 1)
         if len(payload) > MAX_BYTES:
@@ -302,6 +302,11 @@ class Literature:
 class Handler(SimpleHTTPRequestHandler):
     literature = None
     mentor_import_lock = threading.Lock()
+
+    def end_headers(self):
+        if not urlparse(self.path).path.startswith('/api/'):
+            self.send_header('Cache-Control', 'no-cache')
+        super().end_headers()
 
     def send_json(self, value, code=200):
         payload = json.dumps(value, ensure_ascii=False).encode('utf-8')

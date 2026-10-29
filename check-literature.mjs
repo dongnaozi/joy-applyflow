@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { JOURNALS, filterLiterature, paperRelations } from './dist/literature.js';
+import { JOURNALS, filterLiterature, paperRelations, createLiterature } from './dist/literature.js';
 
 const now = new Date('2026-10-28T12:00:00Z');
 const make = (id, journal, date, extra={}) => ({
@@ -44,7 +44,7 @@ assert.deepEqual(ids({topic:'铜基催化'}),['a']);
 assert.deepEqual(ids({evidence:'verified'}),['a','d'],'verified evidence requires an affiliation');
 assert.deepEqual(ids({evidence:'pending'}),['c','b']);
 assert.deepEqual(ids({onlySaved:true},['b','x']),['b'],'saved filter still enforces journal allowlist');
-assert.deepEqual(ids({days:'7'}),['c','a'],'recent window excludes old records');
+assert.deepEqual(ids({days:'7'}),['c','a','b','d'],'removed time filter must not hide previously collected records');
 assert.deepEqual(papers.map(p=>p.id),['a','b','c','d','x'],'filter must not mutate source order');
 
 const relations=paperRelations(a);
@@ -62,6 +62,19 @@ assert.deepEqual(ids({},[],[future]),[],'all-record view still excludes future p
 const boundary=make('boundary','Nature','2026-10-21');
 const outside=make('outside','Nature','2026-10-20');
 const invalid=make('invalid','Nature','not-a-date');
-assert.deepEqual(ids({days:'7'},[],[boundary,outside,invalid]),['boundary'],'date-only boundary is inclusive and invalid dates are rejected');
+assert.equal(filterLiterature([make('plain-search','Nature','2026-10-20',{title:'CO₂ and C₂H₄'})],{query:'CO2'},[],now).length,1,'Plain text search must still find source titles with chemical subscripts');
+assert.deepEqual(ids({days:'7'},[],[boundary,outside,invalid]),['boundary','outside'],'old day options are ignored while invalid dates remain excluded');
+
+const originalDocument=globalThis.document,originalQueue=globalThis.queueMicrotask;
+try{
+  globalThis.document={addEventListener(){}};
+  globalThis.queueMicrotask=()=>{};
+  const escape=value=>String(value??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  const literature=createLiterature({e:escape,external:()=>'',icon:()=>'',button:(action,label)=>`<button data-action="${action}">${label}</button>`,empty:()=>'',showDialog(){},toast(){},redraw(){},getSaved:()=>[],toggleSaved(){},download(){}});
+  const html=literature.render();
+  assert(html.includes('<h1>文献</h1>')&&html.includes('data-lit-advanced'),'compact view retains optional advanced search');
+  assert(!html.includes('data-lit-filter="days"')&&!html.includes('lit-intro'),'time selector and duplicate hero removed');
+  assert.deepEqual(literature.getPapers(),[],'Obsidian can read loaded papers without UI filtering');
+}finally{globalThis.document=originalDocument;globalThis.queueMicrotask=originalQueue;}
 
 console.log('Literature UI checks passed: search fields, strict journals, dates, evidence, saved filters, ordering and paper relations.');

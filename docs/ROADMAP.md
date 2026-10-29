@@ -14,6 +14,15 @@ Available now:
 - RSS / Atom literature tracking and personal JSON import / export.
 - Public/private data separation, fictional examples and release documentation.
 
+## 1.0.1 — Research coverage and Obsidian
+
+Available now:
+
+- QS 2026 top-100 university coverage ledger and a larger, sourced supervisor library.
+- Native local Obsidian vault connection, preview, managed-section updates, personal-note preservation and Markdown export.
+- Nine saved palettes, profile initials, Times New Roman English UI text and plain scientific notation.
+- Compact university and literature controls, retaining the existing personal backup format.
+
 ## 1.1 — Outreach and deadlines
 
 Planned:
@@ -22,7 +31,7 @@ Planned:
 - School / program deadlines with official sources and timezone context.
 - Explicit opt-in reminder behavior with visible permission and delivery limits.
 
-Completion means users can distinguish a program deadline from a supervisor follow-up and export both. The existing follow-up field does not currently issue reminders. Sending email is outside the implemented 1.0 workflow.
+Completion means users can distinguish a program deadline from a supervisor follow-up and export both. The existing follow-up field does not currently issue reminders. Sending email is outside the implemented 1.0.1 workflow.
 
 ## 1.2 — Materials and draft versions
 

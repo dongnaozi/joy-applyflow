@@ -1,6 +1,6 @@
 # Data, privacy and backup
 
-This document describes release 1.0. Personal browser data, runtime files and public repository data have different locations and backup requirements.
+This document describes release 1.0.1. Personal browser data, runtime files and public repository data have different locations and backup requirements. The existing version-1 backup format and browser storage key are intentionally retained for compatibility.
 
 ## Where data lives
 
@@ -10,9 +10,13 @@ This document describes release 1.0. Personal browser data, runtime files and pu
 | Feed definitions | `literature_sources.json` | Yes |
 | Fictional templates | `examples/*.json` | Yes |
 | Background, extracted CV text, custom supervisors, saved papers and supervisors, tasks, stages, notes and follow-up dates | Browser localStorage, key `catalyst-atlas-v1` | No; not repository files |
+| Appearance choice, Obsidian vault name and relative note directory | Same browser localStorage and personal JSON backup | No |
+| QS discovery scope choice | Same browser localStorage and personal JSON backup | No |
 | Feed cache and server logs | `APP_PRIVATE_DIR` | No |
 | Launcher PID, start time and process identity | Ignored `.runtime/server.json` | No |
 | Exported JSON / CSV, original CVs, emails, application materials | User-selected local files; keep outside the repository | No |
+| Obsidian Markdown ZIP and imported notes, including application tasks and notes | User-selected downloads and Obsidian vault | No; keep in a private location |
+| Connected Obsidian directory handle | Browser memory for the current page session; reconnect after reload | No |
 | Optional local private files kept beside code | Ignored `data/private/` | No; explicit local choice only |
 
 Git ignore rules do not encrypt files and do not remove anything already committed. Review staged changes before sharing. Do not place private files in `dist/`, because it is the HTTP document root.
@@ -32,6 +36,8 @@ Copy [.env.example](../.env.example) to `.env` beside `server.py` when an overri
 On Windows the default private directory is `%APPDATA%\joy-applyflow\private`; on macOS it is `~/Library/Application Support/joy-applyflow/private`; on Linux it is `$XDG_STATE_HOME/joy-applyflow/private` or `~/.local/state/joy-applyflow/private`. Leave `APP_PRIVATE_DIR` blank to use that platform default. For an override, write a literal path rather than `%APPDATA%` or `$HOME` expressions. `data/private/` is for manually held files and cannot be used as the runtime directory. The repository's `.env.example` contains placeholders, not credentials. Keep local overrides out of version control. The application does not need cloud API keys.
 
 Private runtime files contain local operational data and may retain feed text fetched during use. The public release excludes runtime caches. Clearing the runtime cache does not delete browser profile data; clearing browser site data does not delete downloaded exports or runtime files.
+
+Obsidian directory access stays in the browser. The connection validates the vault's `.obsidian` directory, then accesses only the generated note paths under the configured folder. A preview reads these paths; the separate sync action requests write access. Personal note text is shown locally and is not sent to the server. See [Obsidian integration](OBSIDIAN.md).
 
 ## Back up and restore
 
@@ -69,4 +75,4 @@ The release omits bulk publisher abstracts and private applicant records. Do not
 
 ## Future persistence
 
-SQLite is an option under evaluation for a later release. No SQLite database, database schema, migrations or server-side personal-record store exists in 1.0. A future implementation must define its private path, backups, import/export and migration before being described as available.
+SQLite is an option under evaluation for a later release. No SQLite database, database schema, migrations or server-side personal-record store exists in 1.0.1. A future implementation must define its private path, backups, import/export and migration before being described as available.
