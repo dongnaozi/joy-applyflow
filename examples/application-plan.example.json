@@ -1,0 +1,87 @@
+{
+  "schemaStatus": "proposed-design-only-not-supported-by-release-1.0",
+  "schemaVersion": "design-0",
+  "notice": "All names, programs, dates and paths are fictional. This is not an importable backup. No private files are included; hash values must be computed when snapshots are implemented.",
+  "supervisors": [
+    {
+      "id": "custom-example-supervisor",
+      "name": "Alex Example (fictional)",
+      "school": "Example University (fictional)"
+    }
+  ],
+  "programs": [
+    {
+      "id": "program-example-2027",
+      "school": "Example University (fictional)",
+      "name": "Example PhD Program (fictional)",
+      "academicYear": "2027-2028",
+      "supervisorIds": ["custom-example-supervisor"]
+    }
+  ],
+  "contactEvents": [
+    {
+      "id": "contact-example-001",
+      "supervisorId": "custom-example-supervisor",
+      "date": "2026-10-29T06:00:00Z",
+      "channel": "email-manual",
+      "subject": "Fictional research-fit question",
+      "outcome": "Example message logged manually; no email was sent by the app.",
+      "nextAction": "Review the fictional program requirements.",
+      "nextActionAt": "2026-11-05T06:00:00Z",
+      "correspondencePath": null
+    }
+  ],
+  "deadlines": [
+    {
+      "id": "deadline-example-001",
+      "programId": "program-example-2027",
+      "academicYear": "2027-2028",
+      "label": "Fictional application deadline",
+      "sourceUrl": "https://example.org/fictional-program/admissions",
+      "verifiedAt": "2026-10-29T06:00:00Z",
+      "localDeadline": "2027-01-15T23:59:00",
+      "timezone": "Asia/Shanghai",
+      "deadlineUtc": "2027-01-15T15:59:00Z",
+      "reminders": {
+        "enabled": false,
+        "consentedAt": null,
+        "windowsDays": [30, 7, 1],
+        "deliveryMode": "proposed-open-workbench-only"
+      }
+    }
+  ],
+  "requiredMaterials": [
+    {
+      "id": "material-example-statement",
+      "programId": "program-example-2027",
+      "name": "Example research statement",
+      "required": true,
+      "status": "in-progress",
+      "sourceUrl": "https://example.org/fictional-program/requirements",
+      "documentId": "document-example-statement",
+      "filePath": null,
+      "updatedAt": "2026-10-29T06:00:00Z"
+    }
+  ],
+  "documents": [
+    {
+      "documentId": "document-example-statement",
+      "title": "Fictional research statement",
+      "kind": "research-statement",
+      "programId": "program-example-2027",
+      "activeVersionId": "version-example-001",
+      "versions": [
+        {
+          "versionId": "version-example-001",
+          "documentId": "document-example-statement",
+          "parentVersionId": null,
+          "sourceFilePath": "materials/source/fictional-statement.md",
+          "snapshotPath": "drafts/document-example-statement/versions/version-example-001.md",
+          "createdAt": "2026-10-29T06:00:00Z",
+          "hash": {"algorithm": "sha256", "value": null},
+          "changeNote": "Illustrative first immutable snapshot; file is not included."
+        }
+      ]
+    }
+  ]
+}

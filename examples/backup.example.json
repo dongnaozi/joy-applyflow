@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "ai": {
+    "model": "deepseek-r1:1.5b"
+  },
+  "profile": {
+    "name": "Demo Applicant (fictional)",
+    "degree": "Example MSc",
+    "school": "Example Institute (fictional)",
+    "advisor": "Demo Advisor (fictional)",
+    "intake": "2027 Fall",
+    "background": "Fictional example: interested in electrocatalysis and catalyst design.",
+    "cvText": "",
+    "fileName": ""
+  },
+  "research": {
+    "name": "Example electrocatalysis research",
+    "shortName": "Example",
+    "keywords": ["electrocatalysis", "catalyst"],
+    "excludedKeywords": []
+  },
+  "application": {
+    "goal": 3,
+    "tasks": [
+      {"id": "prep-direction", "label": "Define a research direction", "done": true},
+      {"id": "prep-cv", "label": "Prepare an example CV", "done": false},
+      {"id": "prep-targets", "label": "Check official program requirements", "done": false}
+    ]
+  },
+  "saved": {
+    "custom-example-supervisor": {
+      "stage": "待了解",
+      "date": "",
+      "note": "Fictional demo note. Verify all facts before a real application.",
+      "tasks": {
+        "read": false,
+        "fit": false,
+        "eligibility": false,
+        "contact": false,
+        "submitted": false
+      }
+    }
+  },
+  "customMentors": [
+    {
+      "id": "custom-example-supervisor",
+      "name": "Alex Example",
+      "school": "Example University (fictional)",
+      "schoolShort": "Example U",
+      "country": "Example region",
+      "title": "Professor (fictional)",
+      "summary": "Fictional supervisor for demonstrating a locally saved record.",
+      "url": "https://example.org/fictional-supervisor",
+      "email": "alex@example.org",
+      "emailSource": "https://example.org/fictional-supervisor",
+      "topics": ["electrocatalysis", "catalyst design"],
+      "custom": true
+    }
+  ],
+  "paperSaved": []
+}

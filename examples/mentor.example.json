@@ -1,0 +1,14 @@
+{
+  "id": "custom-example-supervisor",
+  "name": "Alex Example",
+  "school": "Example University (fictional)",
+  "schoolShort": "Example U",
+  "country": "Example region",
+  "title": "Professor (fictional)",
+  "summary": "Fictional supervisor for demonstrating a locally saved record.",
+  "url": "https://example.org/fictional-supervisor",
+  "email": "alex@example.org",
+  "emailSource": "https://example.org/fictional-supervisor",
+  "topics": ["electrocatalysis", "catalyst design"],
+  "custom": true
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Example electrocatalysis research",
+  "shortName": "Example",
+  "keywords": ["electrocatalysis", "catalyst"],
+  "excludedKeywords": ["review"]
+}
