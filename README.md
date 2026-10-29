@@ -1,6 +1,12 @@
 # Joy ApplyFlow
 
-A personal and modular PhD application workbench built by Joy. Track supervisors, drafts, and deadlines with ease.
+**中文简介**
+
+Joy ApplyFlow 是由 Joy 构建的本地博士申请工作台，帮助申请者整理导师与院校信息、追踪研究文献、比较简历与导师研究方向的关键词，并通过申请清单记录准备进度。支持可选的 Ollama 本地模型；个人背景、简历文字和申请记录保存在当前浏览器，公开代码与私有数据分开管理。
+
+**English overview**
+
+Joy ApplyFlow is a local PhD application workbench built by Joy. It helps applicants organize supervisors and universities, follow research literature, compare CV keywords with supervisors' research interests, and track preparation with application checklists. Optional Ollama integration supports local models. Personal profiles, extracted CV text, and application records are stored in the current browser, separate from the public code.
 
 **Release 1.0** is a local workbench for researching supervisors, organizing a shortlist, and following an application checklist. Draft versioning and school deadline reminders are planned; they are not part of this release. The current interface is primarily Chinese.
 
