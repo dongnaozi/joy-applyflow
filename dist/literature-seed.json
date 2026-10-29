@@ -1,0 +1,374 @@
+[
+  {
+    "id": "10.1038/s41929-026-01620-w",
+    "doi": "10.1038/s41929-026-01620-w",
+    "title": "Operando resolution of CO2 electrolysis interfaces at application-relevant current density reveals water gating",
+    "journal": "Nature Catalysis",
+    "date": "2026-10-15",
+    "url": "https://www.nature.com/articles/s41929-026-01620-w",
+    "authors": [
+      "Anku Guha",
+      "Ranga Rohit Seemakurthi",
+      "Bárbara Polesso",
+      "Prathama Haldar",
+      "Ranit Ram",
+      "Adrián Pinilla-Sánchez",
+      "Indrajit Mondal",
+      "David Kernan",
+      "Núria López",
+      "F. Pelayo García de Arquer"
+    ],
+    "abstract": "",
+    "summaryZh": "",
+    "abstractSource": "",
+    "correspondingAuthors": [
+      {
+        "name": "Núria López",
+        "affiliations": [
+          "ICIQ-CERCA – Institute of Chemical Research of Catalonia, The Barcelona Institute of Science and Technology, Tarragona, Spain"
+        ],
+        "sourceUrl": "https://www.nature.com/articles/s41929-026-01620-w",
+        "verified": true
+      },
+      {
+        "name": "F. Pelayo García de Arquer",
+        "affiliations": [
+          "ICFO – Institut de Ciències Fotòniques, The Barcelona Institute of Science and Technology, Castelldefels, Spain"
+        ],
+        "sourceUrl": "https://www.nature.com/articles/s41929-026-01620-w",
+        "verified": true
+      }
+    ],
+    "topics": [
+      "机理与原位",
+      "器件工程",
+      "界面水"
+    ],
+    "sourceUrls": [
+      "https://www.nature.com/articles/s41929-026-01620-w"
+    ],
+    "evidenceStatus": "出版社核实",
+    "authorsNote": ""
+  },
+  {
+    "id": "10.1038/s41929-026-01609-5",
+    "doi": "10.1038/s41929-026-01609-5",
+    "title": "Unlocking reaction pathways for CO2 and CO electrocatalytic reduction to C3+ hydrocarbons and oxygenates using plasma activation",
+    "journal": "Nature Catalysis",
+    "date": "2026-09-07",
+    "url": "https://www.nature.com/articles/s41929-026-01609-5",
+    "authors": [
+      "Ji-Yong Kim",
+      "Omar Biondo",
+      "Yuanzuo Gao",
+      "Kelby Anderson",
+      "Julia Simon",
+      "Yingzheng Fan",
+      "Hailiang Wang",
+      "Annemie Bogaerts",
+      "Lea R. Winter"
+    ],
+    "abstract": "",
+    "summaryZh": "",
+    "abstractSource": "",
+    "correspondingAuthors": [
+      {
+        "name": "Annemie Bogaerts",
+        "affiliations": [
+          "Research Group PLASMANT and Center of Excellence PLASMA, Department of Chemistry, University of Antwerp, Antwerp, Belgium",
+          "Electrification Institute, University of Antwerp, Antwerp, Belgium"
+        ],
+        "sourceUrl": "https://www.nature.com/articles/s41929-026-01609-5",
+        "verified": true
+      },
+      {
+        "name": "Lea R. Winter",
+        "affiliations": [
+          "Department of Chemical and Environmental Engineering, Yale University, New Haven, CT, USA"
+        ],
+        "sourceUrl": "https://www.nature.com/articles/s41929-026-01609-5",
+        "verified": true
+      }
+    ],
+    "topics": [
+      "铜基催化",
+      "多碳产物",
+      "等离子体耦合"
+    ],
+    "sourceUrls": [
+      "https://www.nature.com/articles/s41929-026-01609-5"
+    ],
+    "evidenceStatus": "出版社核实",
+    "authorsNote": ""
+  },
+  {
+    "id": "10.1002/anie.3659056",
+    "doi": "10.1002/anie.3659056",
+    "title": "Unlocking the Distance Effect on CO2 Electroreduction to Multi-Carbon Products via Monolayer Model Catalysts",
+    "journal": "Angewandte Chemie International Edition",
+    "date": "2026-08-08",
+    "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/anie.3659056",
+    "authors": [
+      "Hengpan Yang",
+      "Kai Song",
+      "Shangzhao Feng",
+      "Shumei Su",
+      "Binhua Chen",
+      "Huizhu Cai",
+      "Xue Zhang",
+      "Qi Hu",
+      "Zhi Chen",
+      "Chuanxin He"
+    ],
+    "abstract": "",
+    "summaryZh": "",
+    "abstractSource": "",
+    "correspondingAuthors": [
+      {
+        "name": "Zhi Chen",
+        "affiliations": [
+          "College of Chemistry and Environmental Engineering, Shenzhen University, Shenzhen, Guangdong, China"
+        ],
+        "sourceUrl": "https://onlinelibrary.wiley.com/doi/abs/10.1002/anie.3659056",
+        "verified": true
+      },
+      {
+        "name": "Chuanxin He",
+        "affiliations": [
+          "College of Chemistry and Environmental Engineering, Shenzhen University, Shenzhen, Guangdong, China"
+        ],
+        "sourceUrl": "https://onlinelibrary.wiley.com/doi/abs/10.1002/anie.3659056",
+        "verified": true
+      }
+    ],
+    "topics": [
+      "铜基催化",
+      "多碳产物",
+      "分子催化",
+      "机理与原位"
+    ],
+    "sourceUrls": [
+      "https://onlinelibrary.wiley.com/doi/abs/10.1002/anie.3659056"
+    ],
+    "evidenceStatus": "出版社核实",
+    "authorsNote": ""
+  },
+  {
+    "id": "10.1038/s41560-026-02062-1",
+    "doi": "10.1038/s41560-026-02062-1",
+    "title": "Chirality-induced spin selectivity as a mechanism to control product selectivity during electrochemical CO2 reduction",
+    "journal": "Nature Energy",
+    "date": "2026-05-12",
+    "url": "https://www.nature.com/articles/s41560-026-02062-1",
+    "authors": [
+      "Jeiwan Tan",
+      "Jacob L. Shelton",
+      "Demelza Wright",
+      "Md Azimul Haque",
+      "Simran S. Saund",
+      "Debjit Ghoshal",
+      "Trung H. Le",
+      "Yifan Dong",
+      "Michelle A. Smeaton",
+      "Katherine L. Jungjohann",
+      "Elisa M. Miller",
+      "Matthew C. Beard",
+      "Nathan R. Neale",
+      "Jao van de Lagemaat"
+    ],
+    "abstract": "",
+    "summaryZh": "",
+    "abstractSource": "",
+    "correspondingAuthors": [
+      {
+        "name": "Matthew C. Beard",
+        "affiliations": [
+          "Materials, Chemistry, and Computational Sciences Directorate, National Laboratory of the Rockies, Golden, CO, USA",
+          "Renewable and Sustainable Energy Institute, University of Colorado Boulder, Boulder, CO, USA"
+        ],
+        "sourceUrl": "https://www.nature.com/articles/s41560-026-02062-1",
+        "verified": true
+      },
+      {
+        "name": "Nathan R. Neale",
+        "affiliations": [
+          "Materials, Chemistry, and Computational Sciences Directorate, National Laboratory of the Rockies, Golden, CO, USA",
+          "Renewable and Sustainable Energy Institute, University of Colorado Boulder, Boulder, CO, USA"
+        ],
+        "sourceUrl": "https://www.nature.com/articles/s41560-026-02062-1",
+        "verified": true
+      },
+      {
+        "name": "Jao van de Lagemaat",
+        "affiliations": [
+          "Materials, Chemistry, and Computational Sciences Directorate, National Laboratory of the Rockies, Golden, CO, USA",
+          "Renewable and Sustainable Energy Institute, University of Colorado Boulder, Boulder, CO, USA"
+        ],
+        "sourceUrl": "https://www.nature.com/articles/s41560-026-02062-1",
+        "verified": true
+      }
+    ],
+    "topics": [
+      "自旋与手性",
+      "机理与原位"
+    ],
+    "sourceUrls": [
+      "https://www.nature.com/articles/s41560-026-02062-1"
+    ],
+    "evidenceStatus": "出版社核实",
+    "authorsNote": ""
+  },
+  {
+    "id": "10.1021/jacs.6c02109",
+    "doi": "10.1021/jacs.6c02109",
+    "title": "Potential of Zero Charge as a Kinetic Descriptor for CO2 Electroreduction",
+    "journal": "Journal of the American Chemical Society",
+    "date": "2026-05-05",
+    "url": "https://pubs.acs.org/doi/10.1021/jacs.6c02109",
+    "authors": [
+      "Wenhao Ren",
+      "Xiaowan Bai",
+      "Min Zheng",
+      "Yan Jiao"
+    ],
+    "abstract": "",
+    "summaryZh": "",
+    "abstractSource": "",
+    "correspondingAuthors": [],
+    "topics": [
+      "理论与计算",
+      "界面电场",
+      "机理与原位"
+    ],
+    "sourceUrls": [
+      "https://pubs.acs.org/doi/10.1021/jacs.6c02109"
+    ],
+    "evidenceStatus": "出版社题录核实；通讯作者待核实",
+    "authorsNote": "当前显示已核实的部分作者；完整作者名单请查看原文。"
+  },
+  {
+    "id": "10.1021/jacs.6c00420",
+    "doi": "10.1021/jacs.6c00420",
+    "title": "Decoupling Product Selectivity in Electrocatalytic CO2 Reduction by Steering the Interfacial Water Structure",
+    "journal": "Journal of the American Chemical Society",
+    "date": "2026-03-03",
+    "url": "https://pubs.acs.org/doi/10.1021/jacs.6c00420",
+    "authors": [],
+    "abstract": "",
+    "summaryZh": "",
+    "abstractSource": "",
+    "correspondingAuthors": [],
+    "topics": [
+      "酸性电解",
+      "界面水",
+      "机理与原位"
+    ],
+    "sourceUrls": [
+      "https://pubs.acs.org/doi/10.1021/jacs.6c00420"
+    ],
+    "evidenceStatus": "出版社题录核实；通讯作者待核实",
+    "authorsNote": "作者完整名单待补充；通讯作者姓名尚待核实。"
+  },
+  {
+    "id": "10.1038/s41467-026-68739-z",
+    "doi": "10.1038/s41467-026-68739-z",
+    "title": "Ampere-level CO2 electroreduction to multi-carbon oxygenates in acidic electrolyte through surface microenvironment reconstruction",
+    "journal": "Nature Communications",
+    "date": "2026-02-04",
+    "url": "https://www.nature.com/articles/s41467-026-68739-z",
+    "authors": [
+      "Yaoyu Yin",
+      "Zhongnan Ling",
+      "Shiqiang Liu",
+      "Shipeng Zhang",
+      "Hengan Wang",
+      "Wenling Zhao",
+      "Huisheng Qin",
+      "Rongjuan Feng",
+      "Xueqing Xing",
+      "Lihong Jing",
+      "Yi Xu",
+      "Qinggong Zhu",
+      "Xiaofu Sun",
+      "Qingli Qian",
+      "Jianling Zhang",
+      "Xinchen Kang",
+      "Buxing Han"
+    ],
+    "abstract": "",
+    "summaryZh": "",
+    "abstractSource": "",
+    "correspondingAuthors": [
+      {
+        "name": "Xinchen Kang",
+        "affiliations": [
+          "Institute of Chemistry, Chinese Academy of Sciences, Beijing, China",
+          "School of Chemistry and Chemical Engineering, University of Chinese Academy of Sciences, Beijing, China"
+        ],
+        "sourceUrl": "https://www.nature.com/articles/s41467-026-68739-z",
+        "verified": true
+      },
+      {
+        "name": "Buxing Han",
+        "affiliations": [
+          "Institute of Chemistry, Chinese Academy of Sciences, Beijing, China",
+          "School of Chemistry and Chemical Engineering, University of Chinese Academy of Sciences, Beijing, China"
+        ],
+        "sourceUrl": "https://www.nature.com/articles/s41467-026-68739-z",
+        "verified": true
+      }
+    ],
+    "topics": [
+      "铜基催化",
+      "多碳产物",
+      "酸性电解",
+      "界面微环境"
+    ],
+    "sourceUrls": [
+      "https://www.nature.com/articles/s41467-026-68739-z"
+    ],
+    "evidenceStatus": "出版社核实",
+    "authorsNote": ""
+  },
+  {
+    "id": "10.1002/anie.8293935",
+    "doi": "10.1002/anie.8293935",
+    "title": "Molecular Electrocatalyst Enables Direct Electrochemical Capture and Conversion of CO2 up to Atmospheric Concentration",
+    "journal": "Angewandte Chemie International Edition",
+    "date": "2026-01-29",
+    "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/anie.8293935",
+    "authors": [
+      "Mattia Vettori",
+      "Federico Franco",
+      "Sergio Fernández",
+      "Guillem Pey",
+      "Vlad Martin Diaconescu",
+      "Josep M. Luis",
+      "Julio Lloret-Fillol"
+    ],
+    "abstract": "",
+    "summaryZh": "",
+    "abstractSource": "",
+    "correspondingAuthors": [
+      {
+        "name": "Julio Lloret-Fillol",
+        "affiliations": [
+          "Institute of Chemical Research of Catalonia (ICIQ), The Barcelona Institute of Science and Technology, Tarragona, Spain",
+          "Catalan Institution for Research and Advanced Studies (ICREA), Barcelona, Spain"
+        ],
+        "sourceUrl": "https://onlinelibrary.wiley.com/doi/abs/10.1002/anie.8293935",
+        "verified": true
+      }
+    ],
+    "topics": [
+      "分子催化",
+      "稀释CO₂",
+      "捕集与转化"
+    ],
+    "sourceUrls": [
+      "https://onlinelibrary.wiley.com/doi/abs/10.1002/anie.8293935"
+    ],
+    "evidenceStatus": "出版社核实",
+    "authorsNote": ""
+  }
+]
